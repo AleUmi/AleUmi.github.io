@@ -1,0 +1,7 @@
+title: "Blog di AleUmi"
+description: "Homework settimanali"
+baseurl: ""      
+url: "https://USERNAME.github.io"
+theme: minima
+language: en
+markdown: kramdown
