@@ -98,7 +98,13 @@
 
 											<p>For this homework I used PostgreSQL as DBMS. I created a database called <strong>Statisitcs</strong> and a table called <strong>Students</strong> with the following SQL commands:</p>
 												<img src="images/CreateTable.png" alt="" />
-												<p></p>
+												<p>Then i populated the table with an INSERT query: </p>
+												<img src="images/InsertQuery.png" alt="" />
+												<h3>Univariate distribution</h3>
+												<p>To calcolate the univariate distribution i executed this script and calculate 
+													the distribution of the variable "Age":</p>
+												<img src="images/AgeDIstribution.png" alt="" />
+												</p>
 
 
 
@@ -114,8 +120,8 @@
 
 									<button id="encryptBtn">Crypt  with Ceasar </button>
 
-									<p>Testo cifrato:</p>
-									<textarea id="encryptedText" readonly placeholder="Il testo cifrato apparirà qui..."></textarea>
+									<p>Encrypted text:</p>
+									<textarea id="encryptedText" readonly placeholder="Encrypted text will appear here"></textarea>
 									<canvas id="encryptedChart"></canvas>
 
 
@@ -193,7 +199,7 @@
 
 											document.getElementById('encryptBtn').addEventListener('click', () => {
 												const input = document.getElementById('inputText').value;
-												if (!input.trim()) return alert("Inserisci un testo prima di cifrare!");
+												if (!input.trim()) return alert("Insert a text to encrypt!");
 
 												const randomShift = Math.floor(Math.random() * 25) + 1;
 												const encrypted = caesarCipher(input, randomShift);
