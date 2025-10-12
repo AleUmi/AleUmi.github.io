@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 2</h2>
+										<p>What is statistics, and why can it be useful for cybersecurity?</p>
+									</header>
+								</div>
+							</section>
+
+							<!-- Two -->
+							<section id="two">
+								<div class="container">
+									<h2>Explain the concept of dataset and distribution</h2>
+                                    <ul>
+											<li><strong>Dataset:</strong> A dataset is collection of data, usually organized in a structured way that is used for analysis, research, or training models.
+                                            Very often the way they are rappresented are Matrix of Unit x Variables.
+                                                <ul>
+                                                    <li>
+                                                        <strong>Rows</strong> represent individual observations or samples also called <strong>Unit</strong>
+                                                    </li>
+                                                    <li>
+                                                        <strong>Columns</strong> represent variables or features (e.g., age, height, income)
+                                                    </li>
+                                                </ul>
+
+                                                <strong>Example dataset (3 people):</strong>
+                                                    <table>
+                                                    <thead>
+                                                        <tr><th>Person</th><th>Age</th><th>Height (cm)</th><th>Weight (kg)</th></tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr><td>A</td><td>25</td><td>170</td><td>68</td></tr>
+                                                        <tr><td>B</td><td>30</td><td>180</td><td>75</td></tr>
+                                                        <tr><td>C</td><td>22</td><td>165</td><td>60</td></tr>
+                                                    </tbody>
+                                                    </table>
+                                        </li>
+											<li><strong>Distribution:</strong> A <strong>distribution</strong> describes how the values of a variable are <em>spread out</em> across the dataset.
+														It tells you which values are common and which are rare.
+													</p>
+													<p>
+														Common visualizations and summaries for distributions include:
+													</p>
+													<ul>
+														<li>Histograms</li>
+														<li>Boxplots</li>
+														
+													</ul>
+													</li>
+										</ul>
+
+											<h2>Create a dataset using a DBMS</h2>
+
+											<p>For this homework I used PostgreSQL as DBMS. I created a database called <strong>Statisitcs</strong> and a table called <strong>Students</strong> with the following SQL commands:</p>
+												<img src="images/CreateTable.png" alt="" />
+												<p></p>
+
+
+
+
+
+												<h2>Distribution of Letters</h2>
+												<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+												
+									<p>Insert a text to visualize the distributions of the letters:</p>
+									<textarea id="inputText" placeholder="Write here..."></textarea>
+									<canvas id="letterChart"></canvas>
+
+									<button id="encryptBtn">Crypt  with Ceasar </button>
+
+									<p>Testo cifrato:</p>
+									<textarea id="encryptedText" readonly placeholder="Il testo cifrato apparirà qui..."></textarea>
+									<canvas id="encryptedChart"></canvas>
+
+
+
+									<script>
+										const ctx = document.getElementById('letterChart');
+										const chart = new Chart(ctx, {
+										type: 'bar',
+										data: {
+											labels: [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'],
+											datasets: [{
+											label: 'Letter distributions',
+											data: Array(26).fill(0),
+											backgroundColor: '#007bff'
+											}]
+										},
+										options: {
+											responsive: true,
+											scales: {
+											y: {
+												beginAtZero: true,
+												title: { display: true, text: 'Count' }
+											},
+											x: {
+												title: { display: true, text: 'Letters' }
+											}
+											}
+										}
+										});
+
+										document.getElementById('inputText').addEventListener('input', (event) => {
+										const text = event.target.value.toUpperCase();
+										const counts = Array(26).fill(0);
+										for (let char of text) {
+											const index = char.charCodeAt(0) - 65;
+											if (index >= 0 && index < 26) {
+											counts[index]++;
+											}
+										}
+										chart.data.datasets[0].data = counts;
+										chart.update();
+										});
+
+
+
+										function caesarCipher(text, shift) {
+											const A = 'A'.charCodeAt(0);
+											return text.toUpperCase().split('').map(char => {
+												const code = char.charCodeAt(0);
+												if (code >= 65 && code <= 90) {
+												return String.fromCharCode(((code - A + shift) % 26) + A);
+													} else {
+												return char;
+													}
+												}).join('');
+											}
+
+
+
+
+											const encryptedChart = new Chart(document.getElementById("encryptedChart"), {
+														type: "bar",
+														data: {
+															labels: [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'],
+															datasets: [{
+															label: "Encrypted Text",
+															data: new Array(26).fill(0),
+															backgroundColor: "orange"
+															}]
+														},
+														options: {
+															scales: { y: { beginAtZero: true } }
+														}
+													});
+
+											document.getElementById('encryptBtn').addEventListener('click', () => {
+												const input = document.getElementById('inputText').value;
+												if (!input.trim()) return alert("Inserisci un testo prima di cifrare!");
+
+												const randomShift = Math.floor(Math.random() * 25) + 1;
+												const encrypted = caesarCipher(input, randomShift);
+
+												document.getElementById('encryptedText').value = encrypted;
+
+													const letters = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+
+													function countLetters(text) {
+													const freq = Array(26).fill(0);
+													for (let char of text.toUpperCase()) {
+														const index = char.charCodeAt(0) - 65;
+														if (index >= 0 && index < 26) freq[index]++;
+													}
+													return freq;
+													}
+
+
+													
+
+
+													
+													const encryptedFreq = countLetters(encrypted);
+													encryptedChart.data.datasets[0].data = encryptedFreq;
+													encryptedChart.update();
+
+											
+											});
+
+
+
+
+
+
+
+
+
+
+
+
+									</script>
+
+
+								</div>
+
+
+								
+
+
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
