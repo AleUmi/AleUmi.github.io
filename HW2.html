@@ -89,9 +89,21 @@
 													<ul>
 														<li>Histograms</li>
 														<li>Boxplots</li>
-														
 													</ul>
+													<p >
+														<strong>Example idea:</strong> If you examine the "Height" column for 1,000 people, you might find most heights fall between
+														165–175 cm and fewer exist below 160 cm or above 185 cm. That pattern is the height distribution — it often looks like a bell curve (the <em>normal distribution</em>).
+													</p>
 													</li>
+													<h2> Relationship between Dataset and Distribution</h2>
+														<p>
+															The dataset is the raw collection of observations. A distribution is the <em>summary</em> or pattern you discover when you analyze one variable from that dataset.
+															In short:
+														</p>
+														<ul>
+															<li><strong>Dataset</strong> = raw material (all observations).</li>
+															<li><strong>Distribution</strong> = the shape or pattern of a variable across that dataset.</li>
+														</ul>
 										</ul>
 
 											<h2>Create a dataset using a DBMS</h2>
@@ -120,9 +132,38 @@
 
 									<button id="encryptBtn">Crypt  with Ceasar </button>
 
+									<p>To encrypt the text we use the CaesarCipher script implemented in this way:</p>
+									<img src="images/RandomShift.png" alt="" />
+									<img src="images/Caesar.png" alt="" />
+
 									<p>Encrypted text:</p>
 									<textarea id="encryptedText" readonly placeholder="Encrypted text will appear here"></textarea>
 									<canvas id="encryptedChart"></canvas>
+
+
+									<h1>
+									Below are the typical letter frequency distributions for English and Italian.</h1>
+									<p> Data source: Wikipedia ("Letter frequency" article) and linguistics studies of letter usage in both languages.
+									</p>
+
+									<h3>Italian Language</h3>
+									<canvas id="italianChart"></canvas>
+
+									<h3>English Language</h3>
+									<canvas id="englishChart"></canvas>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -229,18 +270,69 @@
 											
 											});
 
+												// --- Reference distributions for Italian and English ---
+												const lettersRef = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 
 
+												// Approximate percentage frequency for Italian letters (from linguistic data)
+													const italianFreq = [
+													11.7, 0.9, 4.5, 3.7, 11.8, 1.1, 1.7, 1.5, 10.1, 0.0, 0.0, 6.5, 2.5, 6.9,
+													9.8, 3.0, 0.5, 6.4, 5.3, 5.6, 3.1, 2.1, 0.0, 0.0, 0.0, 0.0
+													];
 
+													// Approximate percentage frequency for English letters
+													const englishFreq = [
+													8.2, 1.5, 2.8, 4.3, 12.7, 2.2, 2.0, 6.1, 7.0, 0.2, 0.8, 4.0, 2.4, 6.7,
+													7.5, 1.9, 0.1, 6.0, 6.3, 9.1, 2.8, 1.0, 2.4, 0.2, 2.0, 0.1
+													];
 
+													// --- Create the Italian chart ---
+													const italianChart = new Chart(document.getElementById("italianChart"), {
+													type: "bar",
+													data: {
+														labels: lettersRef,
+														datasets: [{
+														label: "Italian Letter Frequency (%)",
+														data: italianFreq,
+														backgroundColor: "green"
+														}]
+													},
+													options: {
+														scales: {
+														y: { beginAtZero: true, title: { display: true, text: "Frequency (%)" } },
+														x: { title: { display: true, text: "Letters" } }
+														}
+													}
+													});
 
-
-
+													// --- Create the English chart ---
+													const englishChart = new Chart(document.getElementById("englishChart"), {
+													type: "bar",
+													data: {
+														labels: lettersRef,
+														datasets: [{
+														label: "English Letter Frequency (%)",
+														data: englishFreq,
+														backgroundColor: "blue"
+														}]
+													},
+													options: {
+														scales: {
+														y: { beginAtZero: true, title: { display: true, text: "Frequency (%)" } },
+														x: { title: { display: true, text: "Letters" } }
+														}
+													}
+													});
 
 
 
 
 									</script>
+
+									
+
+									
+
 
 
 								</div>
