@@ -1,0 +1,622 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 3</h2>
+										<p>RSA crypt and decrypt</p>
+									</header>
+								</div>
+							</section>
+
+
+
+							<!-- Two -->
+							<section id="two">
+
+                                    <div class="container">
+                                        <div class="rsa-introduction" style="max-width: 800px; margin: 20px auto; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #fcfcfc; line-height: 1.6;">
+
+                                            <h2 style="border-bottom: 2px solid #007bff; padding-bottom: 5px; color: #333;">
+                                                What is the RSA Algorithm?
+                                            </h2>
+                                            
+                                            <p>The <strong>RSA</strong> (Rivest, Shamir, Adleman) algorithm is one of the most famous public-key encryption systems. It's a fundamental part of internet security, like <strong>HTTPS</strong> (the 🔒 lock icon in your browser).</p>
+                                            
+                                            <p>Its core idea is <strong>asymmetric cryptography</strong>. It uses two different keys, which are mathematically linked. These keys are generated from two large, secret prime numbers (called <i>p</i> and <i>q</i>).</p>
+                                            
+                                            <ul style="list-style-type: none; padding-left: 0;">
+                                                <li>
+                                                    🔑 <strong>Public Key: (N, e)</strong>
+                                                    <br>
+                                                    This key is made of two numbers: <strong>N</strong> (the modulus, where <strong>N</strong> = <i>p</i> &times; <i>q</i>) and <strong>e</strong> (the public exponent). This key can only <em>encrypt</em> (lock) messages. You can share it with anyone.
+                                                </li>
+                                                <li style="margin-top: 10px;">
+                                                    🔐 <strong>Private Key: (N, d)</strong>
+                                                    <br>
+                                                    This key also uses <strong>N</strong>, but has a different, secret number: <strong>d</strong> (the private exponent). This is the only key that can <em>decrypt</em> (unlock) the messages. You must keep <strong>d</strong> absolutely secret.
+                                                </li>
+                                            </ul>
+
+                                            <h3>How Does It Work in Practice?</h3>
+                                            <ol>
+                                                <li><strong>Sending:</strong> If Alice wants to send a secret message <i>M</i> to Bob, she finds <strong>Bob's Public Key (N, e)</strong>. She runs a calculation: <i>C</i> = <i>M</i><sup>e</sup> mod <i>N</i>. The resulting number, <i>C</i>, is the encrypted message.</li>
+                                                <li><strong>Secured:</strong> This number <i>C</i> looks random. Without the private key, it's practically impossible to figure out what <i>M</i> was.</li>
+                                                <li><strong>Receiving:</strong> Bob receives <i>C</i>. He uses his <strong>Private Key (N, d)</strong> to run the reverse calculation: <i>M</i> = <i>C</i><sup>d</sup> mod <i>N</i>. This magically returns the original message, <i>M</i>.</li>
+                                            </ol>
+                                            
+                                            <div style="background: #fffbeb; border: 1px solid #ffc107; padding: 10px 15px; border-radius: 5px; margin-top: 15px;">
+                                                <h4 style="color: #856404; margin-top: 0;">⚠️ A Note on This Exercise</h4>
+                                                <p style="margin-bottom: 0;">In this homework, we are using simplified, small numbers for <i>p</i> and <i>q</i>. We are also encrypting each character individually. As you will see, this "Textbook RSA" method <strong>is not secure</strong> because it's vulnerable to <strong>frequency analysis</strong>—the entire point of the exercise!</p>
+                                            </div>
+
+                                        </div>
+
+
+
+
+
+                                            <h1>"Textbook" RSA Encryption</h1>
+<p>Enter some text. The code will encrypt <strong>only the letters (A-Z)</strong>, ignoring spaces and punctuation.</p>
+
+<div class="key-info">
+    <strong>Fixed Public Key:</strong><br>
+    N = 187 (17 * 11)<br>
+    e = 7
+</div>
+
+<label for="plainInput">Plaintext:</label>
+<textarea id="plainInput" placeholder="Enter text to encrypt... e.g., HELLO WORLD"></textarea>
+
+<button id="encryptButton">Encrypt Text</button>
+
+<label for="cipherOutput">Ciphertext (Numbers):</label>
+<textarea id="cipherOutput" readonly placeholder="The encrypted numbers will appear here..."></textarea>
+
+<div id="chart-container">
+    <h2>Ciphertext Frequency Distribution</h2>
+    <canvas id="cipherChart"></canvas>
+</div>
+<div id="italian-chart-container" style="margin-top: 25px;">
+    <h2>Average Italian Language Distribution (A-Z)</h2>
+    <canvas id="italianChart"></canvas>
+</div>
+<div id="attack-container" style="margin-top: 30px; border-top: 2px solid #dc3545; padding-top: 20px;">
+    <h2>Frequency Analysis Attack (Chi-Square 📊)</h2>
+    <p>
+        Press the button to start an automatic attack. The code will:
+        <br>
+        1. Try all <strong>24 permutations</strong> of the 4 most frequent cipher symbols against the 4 most frequent Italian letters (E, A, I, O).
+        <br>
+        2. Calculate a <strong>Chi-Square ($\chi^2$) score</strong> for each attempt.
+        <br>
+        3. Display the <strong>top 3 candidates</strong> (those with the lowest $\chi^2$ score).
+    </p>
+    
+    <button id="attackButton" style="background-color: #28a745; border-color: #28a745;">Start Chi-Square Attack</button>
+    
+    <div style="margin-top: 15px;">
+        <label style="font-weight: bold;">Decryption Candidates (Sorted by $\chi^2$ Score):</label>
+        <ol id="attackResultList" style="background-color: #f4f4f4; border: 1px solid #ddd; padding: 20px 15px 20px 40px; border-radius: 5px; min-height: 50px; font-family: 'Courier New', Courier, monospace; word-wrap: break-word;"></ol>
+    </div>
+</div>
+<div id="dictionary-attack-container" style="margin-top: 30px; border-top: 2px solid #007bff; padding-top: 20px;">
+    <h2>"Dictionary" Attack (with Public Key)</h2>
+    <p>
+        This is the most powerful attack if an attacker knows the public key.
+        <br>
+        1. The attacker encrypts the entire alphabet (A-Z) with the public key.
+        <br>
+        2. They create a reverse "decryption map" (e.g., 88 → 'A', 157 → 'B', ...).
+        <br>
+        3. They replace each number in the ciphertext with its corresponding letter.
+    </p>
+    
+    <button id="dictionaryAttackButton" style="background-color: #007bff; border-color: #007bff;">Start Dictionary Attack</button>
+    
+    <div style="margin-top: 15px;">
+        <label style="font-weight: bold;">Calculated Decryption Map:</label>
+        <pre id="dictionaryMapResult" style="background-color: #f4f4f4; border: 1px solid #ddd; padding: 10px; border-radius: 5px; font-family: 'Courier New', Courier, monospace; word-wrap: break-word; white-space: pre-wrap;"></pre>
+        
+        <label style="font-weight: bold; margin-top: 10px;">Decryption Result (100% accurate):</label>
+        <pre id="dictionaryAttackResult" style="background-color: #f0fff0; border: 1px solid #28a745; padding: 10px; border-radius: 5px; font-family: 'Courier New', Courier, monospace; word-wrap: break-word; white-space: pre-wrap;"></pre>
+    </div>
+</div>
+
+    <script>
+        // --- Parametri RSA ---
+        // Usiamo BigInt (la 'n' finale) per i calcoli crittografici
+        const N = 187n;
+        const E = 7n;
+        // La chiave privata non serve per crittare, ma la includo per completezza
+        // const D = 23n; 
+
+        // Riferimenti agli elementi HTML
+        const encryptButton = document.getElementById('encryptButton');
+        const plainInput = document.getElementById('plainInput');
+        const cipherOutput = document.getElementById('cipherOutput');
+        const ctx = document.getElementById('cipherChart').getContext('2d');
+        
+        let cipherChart = null; // Variabile per il grafico
+
+        /**
+         * Funzione per la potenza modulare (cuore di RSA)
+         * Calcola (base^exp) % mod in modo efficiente
+         */
+        function modPow(base, exp, mod) {
+            let result = 1n; // Usiamo BigInt
+            base = base % mod;
+            while (exp > 0n) {
+                if (exp % 2n === 1n) {
+                    result = (result * base) % mod;
+                }
+                exp = exp >> 1n; // (exp = exp / 2)
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        // Azione al click del bottone
+        encryptButton.addEventListener('click', () => {
+            const text = plainInput.value;
+            encryptAndDraw(text);
+        });
+
+        function encryptAndDraw(text) {
+            // --- 1. Crittografia del Testo ---
+            
+            const encryptedNumbers = [];    // Array per i numeri cifrati
+            const frequencies = {};         // Oggetto per le frequenze dei numeri cifrati
+            
+            const upperText = text.toUpperCase(); // Converto tutto in maiuscolo
+
+            // Scorro ogni carattere del testo
+            for (const char of upperText) {
+                
+                // **LA PARTE CHIAVE DELLA TUA RICHIESTA**
+                // Controllo se il carattere è una lettera A-Z
+                if (char >= 'A' && char <= 'Z') {
+                    // 1. Converte la lettera in numero (codice ASCII)
+                    const m = BigInt(char.charCodeAt(0)); // Es. 'A' -> 65n
+                    
+                    // 2. Critta il numero: C = M^e mod N
+                    const c = modPow(m, E, N);
+                    
+                    // 3. Converto il risultato (BigInt) in numero normale per l'output
+                    const cNum = Number(c);
+                    
+                    encryptedNumbers.push(cNum);
+                    
+                    // 4. Aggiorno il conteggio delle frequenze per il grafico
+                    frequencies[cNum] = (frequencies[cNum] || 0) + 1;
+                }
+                // Se non è una lettera (spazio, punto, ecc.), viene ignorato.
+            }
+
+            // --- 2. Mostra l'Output Cifrato ---
+            cipherOutput.value = encryptedNumbers.join(' ');
+
+            // --- 3. Disegno del Grafico ---
+
+            // Ordino le etichette (i numeri cifrati) in modo che l'asse X sia ordinato
+            const labels = Object.keys(frequencies).sort((a, b) => Number(a) - Number(b));
+            const data = labels.map(label => frequencies[label]);
+
+            // Distruggo il grafico precedente se esiste
+            if (cipherChart) {
+                cipherChart.destroy();
+            }
+
+            // Creo la nuova istanza del grafico
+            cipherChart = new Chart(ctx, {
+                type: 'bar', // Tipo di grafico: a barre
+                data: {
+                    labels: labels, // Etichette asse X (i numeri cifrati, es. 88, 120, 157)
+                    datasets: [{
+                        label: 'Frequenza Simboli Cifrati',
+                        data: data, // Dati asse Y (i conteggi)
+                        backgroundColor: 'rgba(220, 53, 69, 0.6)', // Colore rosso
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Conteggio' }
+                        },
+                        x: {
+                             title: { display: true, text: 'Valore Numerico Cifrato' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+
+
+                    // ========== INIZIO BLOCCO JS GRAFICO ITALIANO ==========
+
+                    /**
+                     * Disegna il grafico statico della frequenza della lingua italiana.
+                     * Viene chiamato una sola volta al caricamento della pagina.
+                     */
+                    function drawItalianFrequencyChart() {
+                        // 1. Trova il nuovo canvas
+                        const ctxItalian = document.getElementById('italianChart').getContext('2d');
+                        
+                        // 2. Dati di frequenza (approssimati) per la lingua italiana (A-Z)
+                        const italianLabels = [
+                            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+                            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 
+                            'U', 'V', 'W', 'X', 'Y', 'Z'
+                        ];
+                        // Percentuali corrispondenti
+                        const italianData = [
+                            11.1, 1.1, 4.5, 3.7, 11.7, 0.9, 1.6, 0.8, 10.0, 0,
+                            0, 6.5, 2.9, 6.8, 9.6, 3.0, 0.5, 6.3, 4.9, 5.6, 
+                            3.0, 1.5, 0, 0, 0, 0.4 
+                        ];
+
+                        // 3. Crea il grafico
+                        new Chart(ctxItalian, {
+                            type: 'bar',
+                            data: {
+                                labels: italianLabels,
+                                datasets: [{
+                                    label: 'Frequenza Media Lingua Italiana (%)',
+                                    data: italianData,
+                                    backgroundColor: 'rgba(40, 167, 69, 0.6)', // Colore verde per distinguerlo
+                                    borderColor: 'rgba(40, 167, 69, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: { display: true, text: 'Percentuale (%)' }
+                                    },
+                                    x: {
+                                        title: { display: true, text: 'Lettera' }
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: false }
+                                }
+                            }
+                        });
+                    }
+
+                    // Chiamo la funzione per disegnare il grafico italiano non appena lo script viene caricato
+                    drawItalianFrequencyChart();
+
+                    // ========== FINE BLOCCO JS GRAFICO ITALIANO ==========
+
+                   // ========== INIZIO BLOCCO JS ATTACCO FREQUENZA (Chi-Quadrato) ==========
+
+// Dati di frequenza statici per l'italiano (A-Z)
+const ITALIAN_FREQ_PERC = {
+    'A': 11.1, 'B': 1.1, 'C': 4.5, 'D': 3.7, 'E': 11.7, 'F': 0.9, 
+    'G': 1.6, 'H': 0.8, 'I': 10.0, 'J': 0, 'K': 0, 'L': 6.5, 
+    'M': 2.9, 'N': 6.8, 'O': 9.6, 'P': 3.0, 'Q': 0.5, 'R': 6.3, 
+    'S': 4.9, 'T': 5.6, 'U': 3.0, 'V': 1.5, 'W': 0, 'X': 0, 
+    'Y': 0, 'Z': 0.4
+};
+
+// Aggancio l'evento al bottone
+document.getElementById('attackButton').addEventListener('click', () => {
+    runFrequencyAttack();
+});
+
+/**
+ * Calcola il punteggio Chi-quadrato ($\chi^2$) per un dato testo.
+ * Un punteggio basso indica una buona corrispondenza con la lingua italiana.
+ */
+function calculateChiSquare(text) {
+    const textLength = text.length;
+    if (textLength === 0) return 99999; // Punteggio altissimo per testo vuoto
+
+    // 1. Calcola Conteggi ATTESI (E)
+    const expectedCounts = {};
+    for (const letter in ITALIAN_FREQ_PERC) {
+        expectedCounts[letter] = (ITALIAN_FREQ_PERC[letter] / 100) * textLength;
+    }
+    
+    // 2. Calcola Conteggi OSSERVATI (O)
+    const observedCounts = {};
+    for (const letter in ITALIAN_FREQ_PERC) {
+        observedCounts[letter] = 0; // Inizializza tutti a 0
+    }
+    for (const char of text.toUpperCase()) {
+        if (char >= 'A' && char <= 'Z') {
+            observedCounts[char]++;
+        }
+    }
+
+    // 3. Calcola la somma di (O-E)^2 / E
+    let chiSquare = 0;
+    for (const letter in ITALIAN_FREQ_PERC) {
+        const O = observedCounts[letter];
+        const E = expectedCounts[letter];
+        
+        // Evitiamo divisione per 0 per lettere rare (J, K, etc.)
+        if (E > 0) {
+            chiSquare += Math.pow(O - E, 2) / E;
+        }
+    }
+    return chiSquare;
+}
+
+/**
+ * Funzione helper per le permutazioni
+ */
+function getPermutations(arr) {
+    if (arr.length === 0) return [[]];
+    const firstEl = arr[0];
+    const rest = arr.slice(1);
+    const permsWithoutFirst = getPermutations(rest);
+    const allPermutations = [];
+    permsWithoutFirst.forEach(perm => {
+        for (let i = 0; i <= perm.length; i++) {
+            const permWithFirst = [...perm.slice(0, i), firstEl, ...perm.slice(i)];
+            allPermutations.push(permWithFirst);
+        }
+    });
+    return allPermutations;
+}
+
+/**
+ * Funzione principale dell'attacco (MODIFICATA per usare Chi-Quadrato)
+ */
+function runFrequencyAttack() {
+    const N_TO_PERMUTE = 4; // Prova le permutazioni dei primi 4 (4! = 24 tentativi)
+    
+    // --- 1. PRENDI I DATI CIFRATI ---
+    const cipherText = document.getElementById('cipherOutput').value;
+    const resultList = document.getElementById('attackResultList');
+    resultList.innerHTML = ''; // Pulisco la lista
+    
+    if (!cipherText.trim()) {
+        resultList.innerHTML = "<li>Errore: Critta prima un testo.</li>";
+        return;
+    }
+    const cipherNumbers = cipherText.trim().split(' ');
+
+    // --- 2. ORDINA FREQUENZE CIFRATE ---
+    const cipherFreqs = {};
+    for (const num of cipherNumbers) {
+        cipherFreqs[num] = (cipherFreqs[num] || 0) + 1;
+    }
+    const sortedCipherSymbols = Object.entries(cipherFreqs)
+        .sort((a, b) => b[1] - a[1])
+        .map(pair => pair[0]);
+
+    // --- 3. ORDINA FREQUENZE ITALIANE ---
+    const sortedItalianLetters = Object.entries(ITALIAN_FREQ_PERC)
+        .sort((a, b) => b[1] - a[1]) // Ordina per frequenza
+        .map(item => item[0]);     // Prendi solo la lettera
+
+    // --- 4. GENERA LE PERMUTAZIONI E CALCOLA I PUNTEGGI ---
+    
+    const topSymbols = sortedCipherSymbols.slice(0, N_TO_PERMUTE);
+    const topLetters = sortedItalianLetters.slice(0, N_TO_PERMUTE);
+    const tailSymbols = sortedCipherSymbols.slice(N_TO_PERMUTE);
+    const tailLetters = sortedItalianLetters.slice(N_TO_PERMUTE);
+    
+    // Mappa di base per le lettere meno frequenti (la "coda")
+    const baseMap = {};
+    for(let i=0; i < tailSymbols.length; i++) {
+        if(tailLetters[i]) {
+            baseMap[tailSymbols[i]] = tailLetters[i];
+        }
+    }
+    
+    const letterPermutations = getPermutations(topLetters);
+    const candidates = []; // Qui salviamo {score, text, mapString}
+
+    if (topSymbols.length < N_TO_PERMUTE) {
+        resultList.innerHTML = `<li>Errore: Testo troppo corto. Servono almeno ${N_TO_PERMUTE} simboli unici per le permutazioni.</li>`;
+        return;
+    }
+    
+    // Loop attraverso tutte le 24 permutazioni
+    for (const perm of letterPermutations) {
+        const substitutionMap = { ...baseMap };
+        const mappingDetails = [];
+        
+        for(let i=0; i < topSymbols.length; i++) {
+            substitutionMap[topSymbols[i]] = perm[i];
+            mappingDetails.push(`<strong>${topSymbols[i]}→${perm[i]}</strong>`);
+        }
+        
+        // Applica la mappa e decifra il testo completo
+        const decodedText = cipherNumbers.map(num => {
+            return substitutionMap[num] || '?';
+        }).join('');
+
+        // CALCOLA IL PUNTEGGIO CHI-QUADRATO
+        const score = calculateChiSquare(decodedText);
+        
+        candidates.push({
+            score: score,
+            text: decodedText,
+            map: mappingDetails.join(', ')
+        });
+    }
+
+    // --- 5. ORDINA I CANDIDATI E MOSTRA I 3 MIGLIORI ---
+    
+    // Ordina i candidati in base allo score (dal più basso al più alto)
+    candidates.sort((a, b) => a.score - b.score);
+    
+    // Mostra solo i 3 candidati migliori
+    const topCandidates = candidates.slice(0, 3);
+    
+    if (topCandidates.length === 0) {
+        resultList.innerHTML = "<li>Nessun candidato trovato.</li>";
+        return;
+    }
+    
+    topCandidates.forEach((candidate, index) => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '15px';
+        li.innerHTML = `<strong>#${index + 1} Miglior Risultato (Score: ${candidate.score.toFixed(2)})</strong><br>` +
+                       `<strong>Mappa usata:</strong> [${candidate.map}] ... <i>(e il resto 1:1)</i><br>` +
+                       `<strong>Risultato:</strong> ${candidate.text}`;
+        resultList.appendChild(li);
+    });
+}
+// ========== FINE BLOCCO JS ATTACCO FREQUENZA ==========
+// ========== INIZIO BLOCCO JS ATTACCO DIZIONARIO ==========
+
+// Aggancio l'evento al nuovo bottone
+document.getElementById('dictionaryAttackButton').addEventListener('click', () => {
+    runDictionaryAttack();
+});
+
+function runDictionaryAttack() {
+    const mapOutput = document.getElementById('dictionaryMapResult');
+    const resultOutput = document.getElementById('dictionaryAttackResult');
+    
+    // --- 1. PRENDI I DATI CIFRATI ---
+    const cipherText = document.getElementById('cipherOutput').value;
+    if (!cipherText.trim()) {
+        mapOutput.textContent = "Errore: Critta prima un testo.";
+        resultOutput.textContent = "";
+        return;
+    }
+    const cipherNumbers = cipherText.trim().split(' ');
+
+    // --- 2. CREA LA MAPPA DI DECIFRATURA (IL CUORE DELLA TUA IDEA) ---
+    // N e E sono le costanti globali definite all'inizio del tuo script
+    
+    const decryptionMap = {}; // Es. {88: 'A', 157: 'B', ...}
+    const mapDetails = []; // Per mostrare la mappa all'utente
+
+    // Loop per tutte le lettere da 'A' (65) a 'Z' (90)
+    for (let i = 65; i <= 90; i++) {
+        const char = String.fromCharCode(i); // Lettera (es. 'A')
+        const m = BigInt(i); // Codice ASCII (es. 65n)
+        
+        // Critto la lettera usando la chiave pubblica
+        const c = modPow(m, E, N);
+        const cNum = Number(c);
+        
+        // Salvo la mappatura *inversa*
+        decryptionMap[cNum] = char;
+        mapDetails.push(`${cNum} → '${char}'`);
+    }
+
+    // Mostro la mappa che abbiamo costruito
+    mapOutput.textContent = mapDetails.join(' | ');
+
+    // --- 3. APPLICA LA MAPPA E DECIFRA ---
+    
+    // Sostituisco ogni numero con la sua lettera
+    // Se un numero non è nella mappa (non dovrebbe succedere nel nostro caso,
+    // ma è buona norma), metto '?' come hai suggerito.
+    const decodedText = cipherNumbers.map(num => {
+        return decryptionMap[num] || '?';
+    }).join('');
+
+    // Mostro il risultato
+    resultOutput.textContent = decodedText;
+}
+
+// ========== FINE BLOCCO JS ATTACCO DIZIONARIO ==========
+
+
+
+
+
+
+    </script>
+
+
+
+								
+
+
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
