@@ -67,19 +67,15 @@
         }
         
         /* Contenitori per i grafici */
-        .chart-container-row1 { 
-            display: flex; 
-            width: 100%; 
-            height: 800px; /* <-- MODIFICA: Altezza aumentata (era 600px) */
-            gap: 20px; 
-        }
-        .chart-container-row2 {
-            display: flex;
-            width: 100%;
-            height: 600px; /* <-- MODIFICA: Altezza aumentata (era 500px) */
-            gap: 20px;
-            margin-top: 20px;
-        }
+      /* Contenitori per i grafici (3 righe) */
+            .chart-container-row1, .chart-container-row2, .chart-container-row3 { 
+                display: flex; 
+                width: 100%; 
+                gap: 20px; 
+            }
+            .chart-container-row1 { height: 700px; } /* Riga 1 (Grafici 1 & 2) */
+            .chart-container-row2 { height: 500px; margin-top: 20px; } /* Riga 2 (Grafico 3) */
+            .chart-container-row3 { height: 600px; margin-top: 20px; } /* Riga 3 (Grafico 4) */
 
         /* Stili per i box dei grafici */
         .chart-box { 
@@ -91,6 +87,7 @@
         .main-chart { flex: 3; }
         .histogram { flex: 1; }
         .cumulative-chart { flex: 1; }
+        .cumulative-histogram { flex: 1; } /* Ora occupa tutta la riga 3 */
 
     </style>
 	</head>
@@ -129,8 +126,8 @@
 								</div>
 								<div class="container">
 									<header class="major">
-										<h2>Homework 2</h2>
-										<p>What is statistics, and why can it be useful for cybersecurity?</p>
+										<h2>Homework 4</h2>
+										<p>Law of large numbers</p>
 									</header>
 								</div>
 							</section>
@@ -140,22 +137,21 @@
 								<div class="container">
 									
 
-									<h1>Simulazione Legge dei Grandi Numeri (LLN)</h1>
-
+									<h1>Simulation of Law of Large Numbers (LLN) & Central Limit Theorem (CLT)</h1>
     <div class="controls">
         <div>
-            <label for="probP">Probabilità (p)</label>
+            <label for="probP">Probability (p)</label>
             <input type="number" id="probP" value="0.5" min="0.01" max="0.99" step="0.01">
         </div>
         <div>
-            <label for="trialsN">Prove per traiettoria (n)</label>
-            <input type="number" id="trialsN" value="1000" min="10" step="10">
+            <label for="trialsN">Trials per trajectory (n)</label>
+            <input type="number" id="trialsN" value="100" min="10" step="10">
         </div>
         <div>
-            <label for="trajectoriesM">Numero traiettorie (m)</label>
+            <label for="trajectoriesM">Number of trajectories (m)</label>
             <input type="number" id="trajectoriesM" value="50" min="1" step="1">
         </div>
-        <button id="runButton">Esegui Simulazione</button>
+        <button id="runButton">Run Simulation</button>
         <button id="resetZoomButton" class="reset-zoom">Reset Zoom</button>
     </div>
 
@@ -174,6 +170,12 @@
         </div>
     </div>
 
+    <div class="chart-container-row3">
+        <div class="chart-box cumulative-histogram">
+            <canvas id="cumulativeHistogramChart"></canvas>
+        </div>
+    </div>
+
 
     <script>
         // Riferimenti agli elementi
@@ -183,17 +185,19 @@
         const trialsN_input = document.getElementById("trialsN");
         const trajectoriesM_input = document.getElementById("trajectoriesM");
         
-        // Contesti per i 3 canvas
+        // Contesti per i 4 canvas
         const trajCtx = document.getElementById("trajectoryChart").getContext("2d");
         const histCtx = document.getElementById("histogramChart").getContext("2d");
         const cumCtx = document.getElementById("cumulativeChart").getContext("2d"); 
+        const cumHistCtx = document.getElementById("cumulativeHistogramChart").getContext("2d"); // Nuovo
 
-        // Variabili globali per i 3 grafici
+        // Variabili globali per i 4 grafici
         let trajectoryChart;
         let histogramChart;
         let cumulativeChart; 
+        let cumulativeHistogramChart; // Nuovo
 
-        // Funzione helper istogramma (invariata)
+        // Funzione helper per l'istogramma 1 (Frequenze)
         function buildHistogramData(data, p) {
             const binCount = 20; 
             const min = Math.min(...data);
@@ -225,6 +229,46 @@
             }
             return { labels, counts: bins };
         }
+        
+        // NUOVA Funzione helper per l'istogramma 2 (Conteggi)
+        function buildCountHistogramData(data, expectedValue) {
+            const binCount = 30; // Più bin per una gaussiana più definita
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+
+            let range = Math.max(expectedValue - min, max - expectedValue) * 2.1;
+            if (range === 0 || !isFinite(range)) { range = 20; } // Un range di default
+
+            // Assicura che il range sia almeno 1 per bin
+            if (range < binCount) { range = binCount; }
+            
+            // Arrotonda per avere bin di numeri interi
+            range = Math.ceil(range);
+
+            const histMin = Math.floor(expectedValue - range / 2);
+            const histMax = Math.ceil(expectedValue + range / 2);
+            
+            let binSize = Math.ceil((histMax - histMin) / binCount);
+            if (binSize === 0) { binSize = 1; }
+
+            const actualBinCount = Math.ceil((histMax - histMin) / binSize);
+            const bins = Array(actualBinCount).fill(0);
+            const labels = [];
+
+            for (let i = 0; i < actualBinCount; i++) {
+                const binStart = histMin + i * binSize;
+                labels.push(`${binStart}`);
+            }
+
+            data.forEach(value => {
+                let binIndex = Math.floor((value - histMin) / binSize);
+                if (binIndex < 0) binIndex = 0;
+                if (binIndex >= actualBinCount) binIndex = actualBinCount - 1;
+                bins[binIndex]++;
+            });
+            
+            return { labels, counts: bins };
+        }
 
         // Funzione principale simulazione
         function runSimulation() {
@@ -242,7 +286,10 @@
                 const trajectoryDatasets = []; 
                 const finalFrequencies = [];   
                 const cumulativeDatasets = []; 
+                const finalCounts = []; // Nuovo: per il 4° grafico
                 const expectedLine = []; 
+
+                const expectedCount = p * n; // Valore atteso per i conteggi
 
                 for (let j = 1; j <= n; j++) {
                     expectedLine.push(p * j);
@@ -262,66 +309,51 @@
                     }
                     
                     trajectoryDatasets.push({
-                        label: `Traiettoria ${i + 1}`,
-                        data: trajectoryData,
+                        label: `Traiettoria ${i + 1}`, data: trajectoryData,
                         borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
-                        borderWidth: 1.5,
-                        pointRadius: 0, 
-                        fill: false
+                        borderWidth: 1.5, pointRadius: 0, fill: false
                     });
                     
                     finalFrequencies.push(trajectoryData[trajectoryData.length - 1]);
                     
                     cumulativeDatasets.push({
-                        label: `Traiettoria ${i + 1}`,
-                        data: cumulativeData,
+                        label: `Traiettoria ${i + 1}`, data: cumulativeData,
                         borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
-                        borderWidth: 1.5,
-                        pointRadius: 0, 
-                        fill: false,
-                        stepped: true 
+                        borderWidth: 1.5, pointRadius: 0, fill: false, stepped: true 
                     });
+                    
+                    finalCounts.push(successCount); // Salva il conteggio finale
                 }
 
                 trajectoryDatasets.push({
-                    label: `Probabilità p = ${p}`,
-                    data: Array(n).fill(p), 
-                    borderColor: 'red',
-                    borderWidth: 4,
-                    pointRadius: 0,
-                    fill: false
+                    label: `Probabilità p = ${p}`, data: Array(n).fill(p), 
+                    borderColor: 'red', borderWidth: 4, pointRadius: 0, fill: false
                 });
 
                 cumulativeDatasets.push({
-                    label: `Valore Atteso (p*n)`,
-                    data: expectedLine, 
-                    borderColor: 'blue',
-                    borderWidth: 4,
-                    pointRadius: 0,
-                    fill: false
+                    label: `Valore Atteso (p*n)`, data: expectedLine, 
+                    borderColor: 'blue', borderWidth: 4, pointRadius: 0, fill: false
                 });
 
                 // --- Disegna GRAFICO 1 (Traiettorie) ---
                 if (trajectoryChart) { trajectoryChart.destroy(); }
                 trajectoryChart = new Chart(trajCtx, {
-                    type: 'line',
-                    data: { labels: labels, datasets: trajectoryDatasets },
+                    type: 'line', data: { labels: labels, datasets: trajectoryDatasets },
                     options: {
                         responsive: true, maintainAspectRatio: false,
                         plugins: { 
                             legend: { display: false }, tooltip: { enabled: false }, 
-                            title: { display: true, text: `Convergenza Frequenza Relativa f(n)`, font: { size: 18, weight: 'bold' } },
+                            title: { display: true, text: `(1) Convergenza Frequenza Relativa f(n)`, font: { size: 18, weight: 'bold' } },
                             zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }, pan: { enabled: true, mode: 'xy' } }
                         },
                         scales: {
                             x: { title: { display: true, text: 'Numero di prove (n)', font: { size: 16 } }, ticks: { font: { size: 12 } } },
                             y: { title: { display: true, text: 'Frequenza Relativa f(n)', font: { size: 16 } }, ticks: { font: { size: 12 } }, min: 0, max: 1 }
-                        },
-                        animation: { duration: 0 }
+                        }, animation: { duration: 0 }
                     }
                 });
 
-                // --- Disegna GRAFICO 2 (Istogramma) ---
+                // --- Disegna GRAFICO 2 (Istogramma Frequenze) ---
                 const histData = buildHistogramData(finalFrequencies, p);
                 if (histogramChart) { histogramChart.destroy(); }
                 histogramChart = new Chart(histCtx, {
@@ -331,7 +363,7 @@
                         responsive: true, maintainAspectRatio: false,
                         plugins: { 
                             legend: { display: false }, 
-                            title: { display: true, text: 'Distribuzione f(n)', font: { size: 18, weight: 'bold' } },
+                            title: { display: true, text: `(2) Distribuzione f(n)`, font: { size: 18, weight: 'bold' } },
                             zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }, pan: { enabled: true, mode: 'xy' } }
                         },
                         scales: {
@@ -344,29 +376,41 @@
                 // --- Disegna GRAFICO 3 (Cumulativo) ---
                 if (cumulativeChart) { cumulativeChart.destroy(); }
                 cumulativeChart = new Chart(cumCtx, {
-                    type: 'line',
-                    data: { labels: labels, datasets: cumulativeDatasets },
+                    type: 'line', data: { labels: labels, datasets: cumulativeDatasets },
                     options: {
                         responsive: true, maintainAspectRatio: false,
                         plugins: { 
                             legend: { display: false }, tooltip: { enabled: true }, 
-                            title: { 
-                                display: true, 
-                                text: `Conteggio Cumulativo Successi S(n)`,
-                                font: { size: 18, weight: 'bold' }
-                            },
+                            title: { display: true, text: `(3) Conteggio Cumulativo Successi S(n)`, font: { size: 18, weight: 'bold' } },
                             zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }, pan: { enabled: true, mode: 'xy' } }
                         },
                         scales: {
                             x: { title: { display: true, text: 'Numero di prove (n)', font: { size: 16 } }, ticks: { font: { size: 12 } } },
-                            y: { 
-                                title: { display: true, text: 'Numero Totale Successi', font: { size: 16 } }, 
-                                ticks: { font: { size: 12 } }
-                            }
-                        },
-                        animation: { duration: 0 }
+                            y: { title: { display: true, text: 'Numero Totale Successi', font: { size: 16 } }, ticks: { font: { size: 12 } } }
+                        }, animation: { duration: 0 }
                     }
                 });
+
+                // --- Disegna GRAFICO 4 (Istogramma Conteggi) --- (Nuovo)
+                const cumHistData = buildCountHistogramData(finalCounts, expectedCount);
+                if (cumulativeHistogramChart) { cumulativeHistogramChart.destroy(); }
+                cumulativeHistogramChart = new Chart(cumHistCtx, {
+                    type: 'bar',
+                    data: { labels: cumHistData.labels, datasets: [{ label: 'Distribuzione di S(n) (valori finali)', data: cumHistData.counts, backgroundColor: 'rgba(40, 167, 69, 0.8)' }] }, // Colore verde
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false }, 
+                            title: { display: true, text: `(4) Distribuzione S(n)`, font: { size: 18, weight: 'bold' } },
+                            zoom: { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }, pan: { enabled: true, mode: 'xy' } }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: 'Conteggio finale S(n)', font: { size: 16 } }, ticks: { autoSkip: true, maxRotation: 45, minRotation: 0, font: { size: 12 } } },
+                            y: { title: { display: true, text: 'Conteggio (su m)', font: { size: 16 } }, ticks: { font: { size: 12 } } }
+                        }
+                    }
+                });
+
 
             } catch (e) {
                 alert("Si è verificato un errore nello script. Assicurati di essere connesso a internet.\n\nDettagli: " + e.message);
@@ -379,6 +423,7 @@
             if (trajectoryChart) { trajectoryChart.resetZoom(); }
             if (histogramChart) { histogramChart.resetZoom(); }
             if (cumulativeChart) { cumulativeChart.resetZoom(); }
+            if (cumulativeHistogramChart) { cumulativeHistogramChart.resetZoom(); } // Nuovo
         }
 
         // --- Esecuzione ---
