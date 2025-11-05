@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+        <style>
+        .controls { 
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex; 
+            gap: 25px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .controls div { 
+            display: flex; 
+            flex-direction: column; 
+            flex-grow: 1;
+            max-width: 150px;
+        }
+        .controls label { 
+            font-weight: bold; 
+            margin-bottom: 8px;
+            font-size: 1em;
+            color: #555; 
+        }
+        .controls input { 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .controls button { 
+            padding: 12px 25px;
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1.1em;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .controls button:hover { 
+            background-color: #0056b3; 
+            transform: translateY(-2px);
+        }
+        .controls button.reset-zoom {
+            background-color: #6c757d;
+        }
+        .controls button.reset-zoom:hover {
+            background-color: #5a6268;
+        }
+        
+        /* Contenitori per i grafici */
+      /* Contenitori per i grafici (3 righe) */
+            .chart-container-row1, .chart-container-row2, .chart-container-row3 { 
+                display: flex; 
+                width: 100%; 
+                gap: 20px; 
+            }
+            .chart-container-row1 { height: 700px; } /* Riga 1 (Grafici 1 & 2) */
+            .chart-container-row2 { height: 500px; margin-top: 20px; } /* Riga 2 (Grafico 3) */
+            .chart-container-row3 { height: 600px; margin-top: 20px; } /* Riga 3 (Grafico 4) */
+
+        /* Stili per i box dei grafici */
+        .chart-box { 
+            background: #fff; 
+            padding: 20px;
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        }
+        .main-chart { flex: 3; }
+        .histogram { flex: 1; }
+        .cumulative-chart { flex: 1; }
+        .cumulative-histogram { flex: 1; } /* Ora occupa tutta la riga 3 */
+
+    </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 4</h2>
+										<p>Law of large numbers</p>
+									</header>
+								</div>
+							</section>
+
+							<!-- Two -->
+							<section id="two">
+                                
+								<div class="container">
+
+                                    
+                                    
+    
+                                    
+									
+
+									
+									
+
+
+
+								</div>
+
+
+								
+
+
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
