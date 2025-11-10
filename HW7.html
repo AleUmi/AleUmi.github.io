@@ -1,0 +1,522 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            window.MathJax = {
+                tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+                svg: { fontCache: 'global' }
+            };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+        <style>
+        .controls { 
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex; 
+            gap: 25px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .controls div { 
+            display: flex; 
+            flex-direction: column; 
+            flex-grow: 1;
+            max-width: 150px;
+        }
+        .controls label { 
+            font-weight: bold; 
+            margin-bottom: 8px;
+            font-size: 1em;
+            color: #555; 
+        }
+        .controls input { 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .controls button { 
+            padding: 12px 25px;
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1.1em;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .controls button:hover { 
+            background-color: #0056b3; 
+            transform: translateY(-2px);
+        }
+        .controls button.reset-zoom {
+            background-color: #6c757d;
+        }
+        .controls button.reset-zoom:hover {
+            background-color: #5a6268;
+        }
+        
+        /* Contenitori per i grafici */
+      /* Contenitori per i grafici (3 righe) */
+            .chart-container-row1, .chart-container-row2, .chart-container-row3 { 
+                display: flex; 
+                width: 100%; 
+                gap: 20px; 
+            }
+            .chart-container-row1 { height: 700px; } /* Riga 1 (Grafici 1 & 2) */
+            .chart-container-row2 { height: 500px; margin-top: 20px; } /* Riga 2 (Grafico 3) */
+            .chart-container-row3 { height: 600px; margin-top: 20px; } /* Riga 3 (Grafico 4) */
+
+        /* Stili per i box dei grafici */
+        .chart-box { 
+            background: #fff; 
+            padding: 20px;
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        }
+        .main-chart { flex: 3; }
+        .histogram { flex: 1; }
+        .cumulative-chart { flex: 1; }
+        .cumulative-histogram { flex: 1; } /* Ora occupa tutta la riga 3 */
+
+        /* Questo è il CSS per dare lo stile.
+  Aggiungilo al tuo file .css o in un tag <style>
+*/
+
+/* 1. Il contenitore principale */
+.code-showcase {
+  display: flex;         /* Attiva Flexbox */
+  flex-direction: column; /* Dispone i figli in colonna (bottone sopra, image-row sotto) */
+  align-items: center;   /* Centra tutto orizzontalmente */
+  gap: 20px;             /* Spazio tra il bottone e la riga delle immagini */
+  
+  /* Stili per renderlo "decente" */
+  width: 90%;
+  max-width: 1000px;     /* Non farlo diventare troppo largo su schermi grandi */
+  margin: 30px auto;     /* Centra il blocco nella pagina */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+}
+
+/* 2. La riga che contiene le due immagini */
+.image-row {
+  display: flex;         /* Attiva Flexbox anche qui */
+  flex-direction: row;   /* Dispone i figli in riga (una accanto all'altra) */
+  justify-content: center; /* Centra le immagini se c'è spazio */
+  gap: 15px;             /* Spazio tra le due immagini */
+  width: 100%;           /* Occupa tutta la larghezza del contenitore padre */
+}
+
+/* 3. Stile per le singole immagini */
+.image-row img {
+  width: 50%;  /* Ogni immagine occupa metà dello spazio disponibile */
+  height: auto; /* Mantiene le proporzioni corrette */
+  
+  /* Altri stili "decenti" */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 4. Stile per il bottone (già che ci siamo) */
+#run-button {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff; /* Un bel blu */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#run-button:hover {
+  background-color: #0056b3; /* Un blu più scuro quando passi il mouse */
+}
+
+    </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 7</h2>
+										<p>Online Mean & Variance — Simple Recurrences, Robust Algorithms</p>
+									</header>
+								</div>
+							</section>
+
+							<!-- Two -->
+							<section id="two">
+                                
+								<div class="container">
+
+                                <h1>Security Simulator (HMWK 1)</h1>
+<p>
+  This simulator runs a "random walk" to model a server's
+  security score over time, based on attacker threats.
+</p>
+
+<h2>Simulation Parameters</h2>
+<p>Modify the values below and then click "Run" to see how the charts change.</p>
+
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; max-width: 400px; margin-bottom: 20px;">
+    
+    <label for="input-n"><strong>n (Weeks):</strong></label>
+    <input type="number" id="input-n" value="50" min="1" max="1000">
+
+    <label for="input-m"><strong>m (Attackers):</strong></label>
+    <input type="number" id="input-m" value="10" min="1" max="1000">
+
+    <label for="input-p"><strong>p (Attacker Prob.):</strong></label>
+    <input type="number" id="input-p" value="0.05" min="0" max="1" step="0.01">
+    
+    <label for="input-sims"><strong>N. Simulations:</strong></label>
+    <input type="number" id="input-sims" value="100000" min="100" max="1000000" step="10000">
+</div>
+
+
+
+<div class="code-showcase">
+  
+  <button id="run-button">Run Simulation</button>
+  
+  <div class="image-row">
+    
+    <img src="/images/runRandomWalk.png" alt="Random Walk Code Snippet">
+    
+    <img src="/images/countScore.png" alt="Score Counting Code Snippet">
+    
+  </div>
+</div>
+
+<hr>
+
+<div style="width: 80%; margin: 20px auto;">
+  <h2>Chart 1: Single Walk Trajectory</h2>
+  <p>Shows the path (score vs. week) of a single random simulation.</p>
+  <canvas id="single-walk-chart"></canvas>
+</div>
+
+<div style="width: 80%; margin: 20px auto;">
+  <h2>Chart 2: Histogram of Final Scores</h2>
+  <p>Shows the distribution of all final scores (the convergence to binomial).</p>
+  <canvas id="score-chart"></canvas>
+</div>
+
+<div id="simulation-results">
+  <p>Click the "Run Simulation" button to see the results.</p>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+                                <script>
+                                    /**
+ * Questo script (ora in INGLESE) esegue la simulazione HMWK 1.
+ */
+
+// --- VARIABILI GLOBALI PER I GRAFICI ---
+let myScoreChart = null;
+let mySingleWalkChart = null;
+
+// Aggiunge un "listener" che attende il caricamento completo della pagina
+window.addEventListener('DOMContentLoaded', (event) => {
+    const runButton = document.getElementById('run-button');
+    
+    if (runButton) {
+        runButton.addEventListener('click', startSimulation);
+    } else {
+        console.warn("Warning: Button with id='run-button' not found.");
+    }
+});
+
+/**
+ * Funzione principale che avvia la simulazione.
+ */
+function startSimulation() {
+    
+    // --- 1. LETTURA PARAMETRI DALLA PAGINA HTML ---
+    const n_weeks = parseInt(document.getElementById('input-n').value);
+    const m_attackers = parseInt(document.getElementById('input-m').value);
+    const p_attack = parseFloat(document.getElementById('input-p').value);
+    const numSimulations = parseInt(document.getElementById('input-sims').value);
+
+    // --- VALIDAZIONE ---
+    if (isNaN(n_weeks) || isNaN(m_attackers) || isNaN(p_attack) || isNaN(numSimulations)) {
+        alert("Error: Please enter valid numerical values in all fields.");
+        return;
+    }
+    if (n_weeks <= 0 || m_attackers <= 0 || p_attack < 0 || p_attack > 1 || numSimulations <= 0) {
+        alert("Error: Please enter positive values (and p between 0 and 1).");
+        return;
+    }
+
+    const resultsDiv = document.getElementById('simulation-results');
+    if (!resultsDiv) {
+        console.error("Error: Element with id='simulation-results' not found.");
+        return;
+    }
+    
+    // Messaggio di attesa in inglese
+    resultsDiv.innerHTML = "<p>Simulation in progress... (this may take a few seconds)</p>";
+    
+    setTimeout(() => {
+        // --- 2. ESECUZIONE SIMULAZIONE ---
+        console.log("Starting simulation...");
+        const pBreach = 1 - Math.pow(1 - p_attack, m_attackers);
+        
+        const results = runRandomWalk(n_weeks, pBreach, numSimulations);
+        console.log("Simulation complete.");
+
+        // --- 3. VISUALIZZAZIONE RISULTATI ---
+        drawSingleWalkChart(results.firstWalk);
+        drawHistogram(results.scoreCounts, numSimulations);
+        displayResults(results.scoreCounts, resultsDiv, n_weeks, m_attackers, p_attack, pBreach, numSimulations);
+    }, 10);
+}
+
+/**
+ * Esegue il nucleo della simulazione (Random Walk).
+ * (Nessuna modifica di lingua qui, solo logica)
+ */
+function runRandomWalk(n_steps, p_breach, numSimulations) {
+    const finalScores = [];
+    const firstWalkPath = [0];
+    let firstWalkScore = 0;
+
+    for (let i = 0; i < numSimulations; i++) {
+        let currentScore = 0; 
+        if (i === 0) currentScore = firstWalkScore;
+
+        for (let j = 0; j < n_steps; j++) {
+            const rand = Math.random();
+            let step = (rand < p_breach) ? -1 : 1;
+            currentScore += step;
+            if (i === 0) firstWalkPath.push(currentScore);
+        }
+        
+        finalScores.push(currentScore);
+        if (i === 0) firstWalkScore = currentScore;
+    }
+
+    const scoreCounts = {};
+    for (const score of finalScores) {
+        scoreCounts[score] = (scoreCounts[score] || 0) + 1;
+    }
+
+    return { 
+        scoreCounts: scoreCounts,
+        firstWalk: firstWalkPath 
+    };
+}
+
+/**
+ * Disegna il grafico a linee (tradotto in INGLESE).
+ */
+function drawSingleWalkChart(walkData) {
+    const ctx = document.getElementById('single-walk-chart').getContext('2d');
+    if (mySingleWalkChart) mySingleWalkChart.destroy();
+
+    const labels = Array.from({ length: walkData.length }, (v, k) => k);
+
+    mySingleWalkChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Cumulative Score', // Tradotto
+                data: walkData,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderWidth: 2,
+                pointRadius: 0,
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: 'Week' } }, // Tradotto
+                y: { title: { display: true, text: 'Score' } }  // Tradotto
+            },
+            animation: false
+        }
+    });
+}
+
+/**
+ * Disegna l'istogramma (tradotto in INGLESE).
+ */
+function drawHistogram(scoreCounts, numSims) {
+    const ctx = document.getElementById('score-chart').getContext('2d');
+    if (myScoreChart) myScoreChart.destroy();
+    
+    const sortedScores = Object.keys(scoreCounts).map(Number).sort((a, b) => a - b);
+    const counts = sortedScores.map(score => scoreCounts[score]);
+
+    myScoreChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sortedScores,
+            datasets: [{
+                label: 'Number of Trajectories', // Tradotto
+                data: counts,
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: 'Final Score (S)' } }, // Tradotto
+                y: { title: { display: true, text: 'Count (Frequency)' } } // Tradotto
+            },
+            animation: false
+        }
+    });
+}
+
+
+/**
+ * Formatta e visualizza i risultati TESTUALI (tradotto in INGLESE).
+ */
+function displayResults(scoreCounts, resultsDiv, n, m, p, pBreach, numSims) {
+    resultsDiv.innerHTML = "";
+
+    // Tutte le stringhe HTML qui sono tradotte
+    let outputHtml = `<h2>Detailed Simulation Analysis</h2>`;
+    outputHtml += `<p>Parameters: <strong>n</strong>=${n} weeks, <strong>m</strong>=${m} attackers, <strong>p</strong>=${p} (single prob.), <strong>N. Simulations</strong>=${numSims}</p>`;
+    
+    const pSecure = 1 - pBreach;
+    outputHtml += `<h3>Weekly Probabilities</h3>`;
+    outputHtml += `<ul>`;
+    outputHtml += `<li>Prob. Secure (step +1): <tt>(1-p)^m</tt> = <strong>${pSecure.toFixed(5)}</strong></li>`;
+    outputHtml += `<li>Prob. Breach (step -1): <tt>1 - (1-p)^m</tt> = <strong>${pBreach.toFixed(5)}</strong></li>`;
+    outputHtml += `</ul>`;
+
+    outputHtml += `<h3>Parallel with Random Walk</h3>`;
+    outputHtml += `<p>This simulation is a <strong>1D Random Walk</strong>. The 'score' starts at 0 and takes <strong>${n}</strong> steps. At each step, it moves <strong>+1</strong> (with prob. ${pSecure.toFixed(3)}) or <strong>-1</strong> (with prob. ${pBreach.toFixed(3)}). Since the probabilities are asymmetrical, it is a <b>biased random walk</b>.</p>`;
+    outputHtml += `<p>"Chart 1" (above) shows an example of this path.</p>`;
+
+    outputHtml += `<h3>Trajectory Count by Final Score</h3>`;
+    outputHtml += `<p>This table is the text version of "Chart 2" (the histogram).</p>`;
+    outputHtml += `<table border="1" cellpadding="5" cellspacing="0" style="margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th>Final Score (S)</th>
+                            <th>N. Trajectories</th>
+                            <th>Frequency (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+    const sortedScores = Object.keys(scoreCounts).map(Number).sort((a, b) => a - b);
+
+    for (const score of sortedScores) {
+        const count = scoreCounts[score];
+        const frequency = (count / numSims) * 100;
+        outputHtml += `<tr>
+                        <td><strong>${score}</strong></td>
+                        <td>${count.toLocaleString('en-US')}</td> <td>${frequency.toFixed(3)}%</td>
+                       </tr>`;
+    }
+    outputHtml += `</tbody></table>`;
+    
+    outputHtml += `<h3>Convergence to Binomial Distribution</h3>`;
+    outputHtml += `<p>These frequencies approximate a theoretical distribution. If we call <strong>k</strong> the number of breaches (steps -1) and <strong>(n-k)</strong> the number of secure weeks (steps +1), the final score is <strong>S = (n-k) - k = n - 2k</strong>.</p>`;
+    outputHtml += `<p>The number <strong>k</strong> of successes (breaches) in <strong>n</strong> trials (weeks) follows a <strong>Binomial Distribution B(n, p_breach)</strong>. The histogram of our experimental results (Chart 2) converges to this theoretical distribution. As <i>n</i> increases, this distribution in turn tends toward a <strong>Normal (Gaussian) curve</strong>, as predicted by the Central Limit Theorem.</p>`;
+
+    resultsDiv.innerHTML = outputHtml;
+}
+                                </script>
+
+
+								
+
+
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
