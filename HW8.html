@@ -100,7 +100,7 @@
 								<div class="container">
 									<header class="major">
 										<h2>Homework 8</h2>
-										<p>Theoretical Analysis of the Random Walk Simulation/p>
+										<p>Theoretical Analysis of the Random Walk Simulation </p>
 									</header>
 								</div>
 							</section>
@@ -112,144 +112,77 @@
 
 
 
-        <h2>1. Introduction: The Context</h2>
+        <h2>Mathematical Discussion: Analogies with the Bernoulli LLN Simulation</h2>
+
         <p>
-            This essay analyzes the mathematical foundations of the "server security score" simulation performed in HMWK 1. The goal is to bridge the gap between the <strong>experimental simulation</strong> and the <strong>formal mathematical theory</strong> that predicts its results.
-        </p>
-        <p>
-            The simulation itself modeled a <strong>1D biased random walk</strong>. Each step in this walk (a "week") was a <strong>Bernoulli process</strong>: a single, independent trial with two possible outcomes: server secure (+1) or server breached (-1).
-        </p>
-        <p>
-            The central thesis is this: while any single random walk is unpredictable, the <strong>aggregate distribution of thousands of walks is not random at all</strong>. It converges to a precise, predictable shape known as the <strong>Binomial Distribution</strong>. This essay will explore why this shape emerges and how it connects to fundamental mathematical concepts.
+            This analysis contrasts the current server-security (random-walk) assignment with the previous one, which demonstrated the Law of Large Numbers (LLN) via a Bernoulli process. While both exercises involve simulating independent trials and using success counts to form empirical distributions, they diverge in their outcome mapping and in the definition of a single trial's success probability.
         </p>
 
-        <h2>2. Analogies & Differences: HMWK 7 vs. The Law of Large Numbers (LLN)</h2>
+        <h3>Common Ground: Bernoulli Trials and Binomial Counts</h3>
         <p>
-            This homework shares a core foundation with a simulation of the Law of Large Numbers (LLN), but its focus is critically different.
-        </p>
-        
-        <h3>The Core Similarity: The Bernoulli Process</h3>
-        <p>
-            Both experiments (the random walk and an LLN simulation) are built from the same fundamental brick: a sequence of <strong>'n' independent Bernoulli trials</strong>. Each trial has a constant probability of "success" (e.g., <code>p = p_breach</code>).
+            The foundation for both problems is the independent Bernoulli trial. In the standard LLN exercise, a trial succeeds with probability $p$, leading to a total success count $K \sim \mathrm{Binomial}(n,p)$ after $n$ trials. In the server-week model, a week is only "secure" if all $m$ attackers fail. The resulting weekly probability of security is
+            $$q=(1-p)^m,$$
+            and consequently, the total number of secure weeks $K$ is distributed as $\mathrm{Binomial}(n,q)$. The final score, used for the random-walk parallel, is
+            $$S = 2K - n,$$
+            which linearly transforms the binomial count $K\in\{0,1,\dots,n\}$ to the score space $S\in\{-n,-n+2,\dots,n\}$.
         </p>
 
-        <h3>The Key Difference: What We Observe (Sum vs. Mean)</h3>
+        <h3>The PMF, Binomial Coefficients, and Pascal's Triangle</h3>
         <p>
-            The distinction lies in what we measure at the end:
+            The binomial probability mass function (PMF) is constructed using binomial coefficients:
+            $$\mathbb{P}(K=k)=\binom{n}{k}q^{k}(1-q)^{n-k},\qquad k=0,\dots,n.$$
+            In combinatorial terms, $\binom{n}{k}$ is the count of all length-$n$ sequences (trajectories) that contain exactly $k$ secure weeks. Pascal's triangle provides a visual layout of these coefficients: the $n$-th row lists $\binom{n}{0},\binom{n}{1},\dots,\binom{n}{n}$, where every entry is the sum of the two entries directly above it.
         </p>
+
+        <h3>The Binomial Expansion and Normalization</h3>
+        <p>
+            The binomial theorem provides the reason why the PMF probabilities sum to 1. The theorem states that for any $a,b$,
+            $$(a+b)^n=\sum_{k=0}^n \binom{n}{k} a^{n-k} b^k.$$
+            By substituting $a=1-q$ and $b=q$, the equation becomes
+            $$1=(q + (1-q))^n = \sum_{k=0}^n \binom{n}{k} q^k (1-q)^{n-k},$$
+            which demonstrates that the sum of all probabilities in the $\mathrm{Binomial}(n,q)$ distribution is 1, confirming its correct normalization.
+        </p>
+
+        <h3>The Random-Walk Perspective and Linear Transforms</h3>
+        <p>
+            The transformation $K\mapsto S=2K-n$ re-maps the binomial distribution onto a symmetric grid (a lattice) of possible scores. The statistics also transform linearly. We know that:
+            $$\mathbb{E}[K]=nq,\qquad \mathrm{Var}(K)=nq(1-q),$$
+            This leads to:
+            $$\mathbb{E}[S]=2\mathbb{E}[K]-n = n(2q-1),\qquad \mathrm{Var}(S)=4\,\mathrm{Var}(K)=4nq(1-q).$$
+            As $n$ grows large, the Central Limit Theorem (CLT) states that the standardized version of $K$ (and therefore $S$) approaches a normal distribution. This is the reason why our simulation histograms take on a bell shape, even for moderately large $n$.
+        </p>
+
+        <h3>Contrasts and Parallels with the LLN Simulation</h3>
         <ul>
-            <li>
-                <strong>The Law of Large Numbers (LLN)</strong> focuses on the <strong>MEAN (the average)</strong>. It demonstrates that as 'n' (the number of trials) increases, the <em>sample mean</em> (e.g., <code>total_breaches / n_weeks</code>) converges to the <em>theoretical probability</em> (<code>p_breach</code>). It's a convergence to a <strong>single point</strong>.
-            </li>
-            <li>
-                <strong>The Random Walk (HMWK 7)</strong> focuses on the <strong>SUM and its DISTRIBUTION</strong>. We don't care about the average; we care about the <strong>final score</strong> (the final position, <code>S = n - 2k</code>). Our histogram (Chart 2) does not converge to a single point, but to an <strong>entire shape</strong>. This is the domain of the <strong>Central Limit Theorem (CLT)</strong>.
-            </li>
+            <li>Parallel: Both exercises are rooted in a large number of independent trials and use binomial combinatorics to estimate probabilities. Both also demonstrate the LLN principle: empirical frequencies converge to theoretical probabilities over time.</li>
+            <li>Contrast: The prior LLN simulation modeled a basic Bernoulli($p$) trial directly (one trial = one success/failure). In this homework, a single trial (one week) is a <strong>composite event</strong> (security requires all $m$ attackers to fail). This makes the effective weekly success probability $q=(1-p)^m$ a non-linear function of $m$ and $p$.</li>
+            <li>Contrast in Focus: The LLN experiment centers on the <strong>relative frequency</strong> $K/n$ and its convergence to $p$. The random-walk assignment centers on the <strong>cumulative sum</strong> of $\pm1$ steps (which is a linear transform of $K$) and is more naturally viewed as a path or trajectory.</li>
         </ul>
-        <blockquote>
-            <strong>In summary:</strong> The LLN tells us <em>where</em> the average will settle. Our HMWK 1 simulation (and the CLT) tells us <em>how</em> the final sum is distributed <em>around</em> that average.
-        </blockquote>
 
-        <h2>3. The Distribution's Engine: Combinatorial Coefficients</h2>
+        <h3>Combinatorial Identities and the Fibonacci Link</h3>
         <p>
-            This section explains <em>why</em> the histogram (Chart 2) has its characteristic bell shape. The shape is not just due to the probabilities, but fundamentally due to <strong>the number of ways</strong> a given outcome can occur.
-        </p>
-        <p>
-            This is the problem of <strong>counting</strong>, solved by <strong>Combinatorial (or Binomial) Coefficients</strong>. We use the notation <strong><code>(n k)</code></strong> (read "n choose k"), which is calculated as:
-        </p>
-        <p style="text-align: center; font-size: 1.1em;">
-            <code>(n k) = n! / (k! * (n-k)!)</code>
+            Aside from the primary binomial facts, elegant combinatorial relationships connect Pascal's triangle to other integer sequences, most famously the Fibonacci numbers. A well-known identity states that summing the "shallow diagonals" of the triangle yields the Fibonacci sequence. Formally,
+            $$F_n = \sum_{k\ge 0} \binom{n-1-k}{k},$$
+            where $F_n$ is the $n$-th Fibonacci number (given appropriate indexing). This property can be proven using induction or via combinatorial arguments (like tiling with squares and dominoes).
         </p>
         <p>
-            This formula <strong>counts the exact number of unique "paths" (trajectories)</strong> that can lead to a specific final score.
+            A separate, powerful identity is Vandermonde's convolution, which involves sums of products of coefficients and is useful when combining independent binomial random variables:
+            $$\sum_{k} \binom{r}{k}\binom{s}{n-k}=\binom{r+s}{n}.$$
+            This identity is particularly useful when decomposing an experiment into multiple stages (e.g., conditioning on the breach count in the first half of the weeks).
         </p>
+
+        <h3>Practical Takeaways and Further Experiments</h3>
         <ul>
-            <li>
-                <strong>Example (n=50 weeks):</strong> To get a final score of <strong>S = +50</strong> (which means <code>k=0</code> breaches), there is <strong>only one possible path</strong>: 50 consecutive "+1" steps. The formula confirms this: <code>(50 0) = 1</code>.
-            </li>
-            <li>
-                To get <strong>S = +48</strong> (<code>k=1</code> breach), there are <strong>50 possible paths</strong> (the single breach could happen in week 1, week 2, ..., or week 50). The formula confirms this: <code>(50 1) = 50</code>.
-            </li>
-            <li>
-                To get <strong>S = 0</strong> (<code>k=25</code> breaches), there are <code>(50 25)</code> paths, which is an astronomical number (approx. 126 trillion).
-            </li>
+            <li>Vary $m$ and $p$ (holding $n$ constant) to see how the effective probability $q=(1-p)^m$ alters the histogram's shape and the mean of the final score $S$. A small $q$ will skew the distribution toward negative scores, while $q\approx 0.5$ will center the distribution near $S=0$.</li>
+            <li>Check the empirical frequencies from the simulation against the theoretical $\mathrm{Binomial}(n,q)$ PMF. Plot the absolute error (difference) against $T$ (the total number of trajectories) to visualize the $O(1/\sqrt{T})$ convergence rate associated with the LLN.</li>
+            <li>Calculate the distribution's cumulants. The formulas for binomial skewness and kurtosis demonstrate how the distribution deviates from a perfect normal curve at small $n$. Observe how these values approach the Gaussian limits as $n$ increases.</li>
         </ul>
-        <p>
-            <strong>Conclusion:</strong> The height of each bar in our histogram is the product of two factors:
-        </p>
-        <ol>
-            <li>The <strong>number of paths</strong> to get to that score (the binomial coefficient <code>(n k)</code>).</li>
-            <li>The <strong>probability</strong> of any single one of those paths (the term <code>(p_breach)^k * (p_secure)^(n-k)</code>).</li>
-        </ol>
-        <p>
-            The bell shape is overwhelmingly dominated by Factor 1: there are exponentially more paths that lead to the center of the distribution than to its extremes.
-        </p>
-        
-        <h2>4. Visualization & Formalization: Pascal's Triangle and Binomial Expansion</h2>
-        
-        <h3>Pascal's Triangle</h3>
-        <p>
-            <strong>Pascal's Triangle</strong> is a beautiful visual representation of all the binomial coefficients. Each number in the triangle <em>is</em> a specific <code>(n k)</code> value.
-        </p>
-        
 
-[Image of Pascal's Triangle]
-
+        <h3>Conclusion</h3>
         <p>
-            Row 'n' of the triangle <em>is</em> the histogram of path counts for an n-step random walk (if p=0.5). Our Chart 2 from HMWK 1 is, conceptually, the <strong>50th row of Pascal's Triangle, "weighted" or "skewed"</strong> by our biased probabilities.
+            In conclusion, both assignments serve as practical investigations into the same fundamental concepts: independent Bernoulli trials and binomial combinatorics. The random-walk framing re-casts the binomial counts onto a symmetric score lattice, focusing on the sum, while the LLN experiment highlights the convergence of the mean. The precise combinatorial framework is provided by Pascal's triangle, binomial coefficients, and the binomial theorem. Furthermore, deeper identities, like the one linking to Fibonacci numbers or Vandermonde's convolution, showcase the broad and elegant connections between probability, algebra, and discrete mathematics.
         </p>
-
-        <h3>The Binomial Expansion (Theorem)</h3>
-        <p>
-            This is the algebraic formula that formally unites all these concepts:
-        </p>
-        <p style="text-align: center; font-size: 1.1em;">
-            <code>(a + b)^n = Σ [from k=0 to n] (n k) * a^k * b^(n-k)</code>
-        </p>
-        <p>
-            The connection becomes clear with a simple substitution:
-        </p>
-        <ul>
-            <li>Let <code>a = p_breach</code></li>
-            <li>Let <code>b = p_secure</code></li>
-        </ul>
-        <p>
-            Since <code>p_breach + p_secure = 1</code>, the left side of the equation becomes <code>(1)^n = 1</code>.
-            The right side becomes: <code>Σ [from k=0 to n] (n k) * (p_breach)^k * (p_secure)^(n-k)</code>
-        </p>
-        <p>
-            This is profound. Each term in that sum, <code>(n k) * p^k * (1-p)^(n-k)</code>, is the <strong>exact formula for the Binomial Probability Distribution</strong>.
-        </p>
-        <p>
-            <strong>Conclusion:</strong> The Binomial Theorem is the formal proof that the <strong>sum of all probabilities in our distribution</strong> (the sum of all the bars in our histogram) <strong>must equal 1</strong>.
-        </p>
-
-        <h2>5. A Side Connection: The Fibonacci Sequence</h2>
-        <p>
-            This final connection illustrates the deep unity of mathematics. The same Pascal's Triangle that governs our random walk "secretly" contains the Fibonacci sequence.
-        </p>
-        <p>
-            If you sum the numbers along the "shallow diagonals" of Pascal's Triangle, you get the Fibonacci numbers: 1, 1, 2, 3, 5, 8, 13...
-        </p>
-        
-        <p>
-            This is relevant because it shows that the same fundamental combinatorial structure <code>(n k)</code> emerges in seemingly unrelated fields:
-        </p>
-        <ul>
-            <li>The probabilities of a random walk (HMWK 1).</li>
-            <li>Algebraic expansions (Binomial Theorem).</li>
-            <li>Recursive growth models (Fibonacci).</li>
-        </ul>
-        <p>This demonstrates the elegance and interconnectedness of these mathematical principles.</p>
-
-        <h2>6. Conclusion: From Experiment to Theory</h2>
-        <p>
-            <strong>HMWK 1</strong> was a <strong>computational experiment</strong> (a Monte Carlo method). We <em>observed</em> a phenomenon: the emergence of a predictable, ordered shape (the bell curve) from millions of random steps.
-        </p>
-        <p>
-            <strong>HMWK 2</strong> was the <strong>formal analysis</strong>. We <em>explained why</em> this phenomenon was inevitable. The explanation lies in the <strong>principles of combinatorics</strong> (counting paths with <code>(n k)</code>), which are visualized by <strong>Pascal's Triangle</strong> and given their algebraic power by the <strong>Binomial Theorem</strong>.
-        </p>
-
-                                </div>
+    </div>
 
                               
 
