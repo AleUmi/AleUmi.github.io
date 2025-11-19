@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            window.MathJax = {
+                tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+                svg: { fontCache: 'global' }
+            };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+        <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3 {
+            color: #343a40;
+            line-height: 1.3;
+        }
+        h1 {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 30px;
+        }
+        code, tt {
+            background-color: #e9ecef;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+            margin-left: 0;
+            font-style: italic;
+            color: #495057;
+        }
+    </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 9</h2>
+										<p>Probability Theory: Foundations and Axioms</p>
+									</header>
+								</div>
+							</section>
+
+							<!-- Two -->
+							<section id="two">
+                                
+								<div class="container"> 
+
+                                    <h2>1. Main Interpretations of Probability</h2>
+            <p>Before the modern axiomatic framework was established, probability was understood through various intuitive lenses. While useful, each approach suffers from logical limitations.</p>
+
+            <h3>A. Classical Interpretation (Laplace)</h3>
+            <p>Based on the <strong>Principle of Indifference</strong>. If an experiment has $N$ mutually exclusive and equally likely outcomes, and if $N_A$ of these outcomes result in event $A$, then:</p>
+            $$P(A) = \frac{N_A}{N}$$
+            <div class="box">
+                <strong>Critique:</strong> It is circular. The definition relies on the term "equally likely," which essentially means "equal probability," the very concept we are trying to define. It also fails for infinite sample spaces.
+            </div>
+
+            <h3>B. Frequentist Interpretation (Von Mises)</h3>
+            <p>Probability is defined as the limit of the relative frequency of an event as the number of trials approaches infinity.</p>
+            $$P(A) = \lim_{n \to \infty} \frac{n_A}{n}$$
+            <div class="box">
+                <strong>Critique:</strong> It requires the assumption of infinite repeatability under identical conditions, which is physically impossible. It cannot assign probability to single, non-repeatable events (e.g., "The probability of a specific candidate winning an election").
+            </div>
+
+            <h3>C. Subjective (Bayesian) Interpretation</h3>
+            <p>Probability is a measure of an individual's <strong>degree of belief</strong> in the occurrence of an event, based on available information. It is updated as new evidence is acquired via Bayes' Theorem.</p>
+            <div class="box">
+                <strong>Critique:</strong> It lacks objectivity. Two rational agents with different priors may assign different probabilities to the same event.
+            </div>
+        </section>
+
+        <div class="container">
+            <h2>2. The Axiomatic Approach & Measure Theory</h2>
+            <p>To resolve the inconsistencies of earlier interpretations, Andrey Kolmogorov (1933) formalized probability using <strong>Measure Theory</strong>. In this framework, probability is not defined by *what it is*, but by *how it behaves*.</p>
+
+            <p>A probability space is a triple $(\Omega, \mathcal{F}, P)$:</p>
+
+            <ul>
+                <li><strong>Sample Space ($\Omega$):</strong> The set of all possible elementary outcomes.</li>
+                <li><strong>Sigma-Algebra ($\mathcal{F}$):</strong> A collection of subsets of $\Omega$ (events) to which we can assign a probability. It must satisfy:
+                    <ul>
+                        <li>$\Omega \in \mathcal{F}$</li>
+                        <li>Closed under complement ($A \in \mathcal{F} \implies A^c \in \mathcal{F}$)</li>
+                        <li>Closed under countable unions.</li>
+                    </ul>
+                </li>
+                <li><strong>Probability Measure ($P$):</strong> A function $P: \mathcal{F} \to [0, 1]$ satisfying the axioms below.</li>
+            </ul>
+
+            <h3>Random Variables as Measurable Functions</h3>
+            <p>A key insight of Measure Theory is the definition of a Random Variable. It is not a variable, but a function $X: \Omega \to \mathbb{R}$.</p>
+            <p>For $X$ to be a valid random variable, it must be <strong>measurable</strong>. This means that for any interval (or Borel set $B$) in the real line, its pre-image must be an event in our Sigma-Algebra:</p>
+            $$X^{-1}(B) = \{ \omega \in \Omega : X(\omega) \in B \} \in \mathcal{F}$$
+            <p>This ensures that questions like "What is the probability that $X$ is greater than 5?" have a well-defined answer.</p>
+        </div>
+
+        <div class="container">
+            <h2>3. Derivations from the Axioms</h2>
+            <p>Using Kolmogorov's axioms (Non-negativity, Normalization, and Countable Additivity), we can derive all other properties of probability.</p>
+
+            <h3>Property 1: Subadditivity (Boole's Inequality)</h3>
+            <p><strong>Statement:</strong> For any sequence of events $A_1, A_2, \dots$ (not necessarily disjoint):</p>
+            $$P\left(\bigcup_{i=1}^{\infty} A_i\right) \leq \sum_{i=1}^{\infty} P(A_i)$$
+
+            <div class="proof">
+                <strong>Proof:</strong><br>
+                1. Construct a sequence of disjoint events $B_i$ such that $B_1 = A_1$, $B_2 = A_2 \setminus A_1$, $B_3 = A_3 \setminus (A_1 \cup A_2)$, and so on.<br>
+                2. By construction, $B_i \subseteq A_i$ and $\bigcup B_i = \bigcup A_i$.<br>
+                3. Since $B_i$ are disjoint, we apply the Axiom of Countable Additivity:<br>
+                $$P\left(\bigcup_{i=1}^{\infty} A_i\right) = P\left(\bigcup_{i=1}^{\infty} B_i\right) = \sum_{i=1}^{\infty} P(B_i)$$
+                4. By the monotonicity of probability (since $B_i \subseteq A_i$, then $P(B_i) \leq P(A_i)$), we obtain:<br>
+                $$\sum_{i=1}^{\infty} P(B_i) \leq \sum_{i=1}^{\infty} P(A_i)$$
+                Q.E.D.
+            </div>
+
+            <h3>Property 2: Inclusion–Exclusion Principle</h3>
+            <p><strong>Statement:</strong> For two events $A$ and $B$, the probability of their union is:</p>
+            $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+
+            <div class="proof">
+                <strong>Proof:</strong><br>
+                1. We can decompose the union $A \cup B$ into three disjoint sets:<br>
+                $$A \cup B = (A \setminus B) \cup (A \cap B) \cup (B \setminus A)$$
+                2. By additivity:<br>
+                $$P(A \cup B) = P(A \setminus B) + P(A \cap B) + P(B \setminus A)$$
+                3. Note that event $A$ is the disjoint union of $(A \setminus B)$ and $(A \cap B)$. Thus, $P(A) = P(A \setminus B) + P(A \cap B)$, which implies $P(A \setminus B) = P(A) - P(A \cap B)$. Similarly for $B$.<br>
+                4. Substituting these back into step 2:<br>
+                $$P(A \cup B) = [P(A) - P(A \cap B)] + P(A \cap B) + [P(B) - P(A \cap B)]$$
+                5. Canceling terms yields:<br>
+                $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+                Q.E.D.
+            </div>
+
+
+
+
+                            </div>
+
+
+								
+
+                        </div>
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

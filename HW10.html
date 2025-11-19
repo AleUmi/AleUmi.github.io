@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<!--
+	Read Only by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Read Only by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            window.MathJax = {
+                tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+                svg: { fontCache: 'global' }
+            };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+        <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3 {
+            color: #343a40;
+            line-height: 1.3;
+        }
+        h1 {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 30px;
+        }
+        code, tt {
+            background-color: #e9ecef;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+            margin-left: 0;
+            font-style: italic;
+            color: #495057;
+        }
+    </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<span class="image avatar"><img src="images/avatar.jpg" alt="" /></span>
+					<h1 id="logo"><a href="#">Alessio Mareschi</a></h1>
+					<p><a href="index.html">Home</a></p>
+					
+				</header>
+				
+				<footer>
+					<ul class="icons">
+						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+				</footer>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one">
+								<div class="image main" data-position="center">
+									<img src="images/HW1_image.png" alt="" />
+								</div>
+								<div class="container">
+									<header class="major">
+										<h2>Homework 10</h2>
+										<p>Simulation: Bernoulli approximation of a Poisson process</p>
+									</header>
+								</div>
+							</section>
+
+							<!-- Two -->
+                             <section id="two">
+
+								<div class="container">
+    <h1>Poisson Process Simulation</h1>
+    <p>We set a time interval \(T=1\) and a rate \(\lambda\). We approximate the process by dividing time into \(n\) subintervals and simulating Bernoulli trials with \(p = \lambda/n\).</p>
+
+    <div class="control-panel">
+        <div>
+            <label>Average Rate (\(\lambda\)):</label>
+            <input type="number" id="lambda" value="10" min="1" max="50">
+        </div>
+        <div>
+            <label>Subintervals (\(n\)):</label>
+            <input type="number" id="nSteps" value="1000" min="100" max="10000">
+        </div>
+        <button onclick="runFullSimulation()">Run Simulation</button>
+    </div>
+
+    <div class="chart-container">
+        <h2>1. Timeline Visualization (Single Run)</h2>
+        <p class="stats">Events generated in this specific simulation (red bars):</p>
+        <canvas id="timelineCanvas"></canvas>
+        <div id="timelineStats" style="font-weight: bold; margin-top: 10px; color: #3498db;"></div>
+    </div>
+
+    <div class="grid-2">
+        <div class="chart-container">
+            <h2>2. Convergence to Poisson</h2>
+            <p class="stats">We run the simulation 2000 times. How often do we get exactly k events?</p>
+            <canvas id="countChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>3. Inter-arrival Times</h2>
+            <p class="stats">Time elapsed between two consecutive events (should follow Exponential distribution).</p>
+            <canvas id="intervalChart"></canvas>
+        </div>
+    </div>
+
+
+<div class="container" style="margin-top: 30px;">
+    <h2>Theoretical Analysis & Interpretation</h2>
+
+    <div style="margin-bottom: 25px;">
+        <h3 style="color: #2980b9; border-bottom: 1px solid #eee; padding-bottom: 5px;">1. Identification of the Stochastic Process</h3>
+        <p>
+            The simulation performs a sequence of Bernoulli trials over infinitesimally small time intervals. 
+            Mathematically, we are observing the behavior of a Binomial distribution \( B(n, p) \) where the probability of success is scaled as \( p = \lambda / n \).
+        </p>
+        <p>
+            According to the <strong>Poisson Limit Theorem</strong> (also known as the Law of Rare Events), as the number of subintervals approaches infinity (\( n \to \infty \)) while the rate \( \lambda \) remains constant, the Binomial distribution converges to the <strong>Poisson Distribution</strong>.
+        </p>
+        <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #2980b9; margin: 10px 0;">
+            $$ \lim_{n \to \infty} \binom{n}{k} \left(\frac{\lambda}{n}\right)^k \left(1 - \frac{\lambda}{n}\right)^{n-k} = \frac{e^{-\lambda} \lambda^k}{k!} $$
+        </div>
+        <p>
+            Therefore, the stochastic process generated by this simulation is a <strong>Homogeneous Poisson Point Process</strong> (HPP) with intensity \(\lambda\).
+        </p>
+    </div>
+
+    <div style="margin-bottom: 25px;">
+        <h3 style="color: #2980b9; border-bottom: 1px solid #eee; padding-bottom: 5px;">2. Fundamental Properties</h3>
+        <p>The resulting process exhibits three defining theoretical properties:</p>
+        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.8;">
+            <li>
+                <strong>Independent Increments (Memorylessness):</strong> The number of events occurring in disjoint time intervals is independent. The fact that an event occurred at time \(t\) does not influence the probability of an event occurring at time \(t + \Delta t\).
+            </li>
+            <li>
+                <strong>Stationarity (Time Homogeneity):</strong> The probability of an event occurring depends only on the length of the time interval, not on <em>when</em> the interval starts. The average rate is constant throughout the timeline.
+            </li>
+            <li>
+                <strong>Orderliness:</strong> As the subintervals become small enough (\(dt\)), the probability of two or more events occurring at the exact same instant is negligible (zero). Events occur one at a time.
+            </li>
+        </ul>
+        
+
+[Image of Poisson process properties diagram]
+
+    </div>
+
+    <div style="margin-bottom: 25px;">
+        <h3 style="color: #2980b9; border-bottom: 1px solid #eee; padding-bottom: 5px;">3. Relationship with the Exponential Distribution</h3>
+        <p>
+            A key theoretical result verified by our third graph is the distribution of <strong>inter-arrival times</strong> (the time \(T\) between two consecutive events).
+            For a Poisson process with rate \(\lambda\), the inter-arrival times are independent and identically distributed (i.i.d.) following an <strong>Exponential Distribution</strong>:
+        </p>
+        <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #27ae60; margin: 10px 0;">
+            $$ f(t) = \lambda e^{-\lambda t}, \quad t \geq 0 $$
+        </div>
+        <p>
+            This explains why the third graph is a decaying curve: short gaps between events are highly probable, while long gaps are rare. This is the mathematical manifestation of the "clumping" effect seen in random processes.
+        </p>
+    </div>
+
+    <div>
+        <h3 style="color: #2980b9; border-bottom: 1px solid #eee; padding-bottom: 5px;">4. Interpretation of the Parameter \(\lambda\)</h3>
+        <p>
+            The parameter \(\lambda\) (Lambda) represents the <strong>intensity</strong> or <strong>rate</strong> of the process.
+        </p>
+        <ul style="list-style-type: circle; margin-left: 20px;">
+            <li><strong>Expectation:</strong> \(\lambda\) is the expected (average) number of events in a unit time interval (\(T=1\)). If \(\lambda=10\), we expect 10 events on average, though the actual number will fluctuate (variance is also \(\lambda\)).</li>
+            <li><strong>Physical Meaning:</strong> In physics, this could be the decay rate of a radioactive particle; in telecommunications, the arrival rate of packets at a router; in finance, the arrival of market orders.</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<script>
+    // Global variables for Chart.js instances
+    let countChartInstance = null;
+    let intervalChartInstance = null;
+
+    function runFullSimulation() {
+        const lambda = parseFloat(document.getElementById('lambda').value);
+        const n = parseInt(document.getElementById('nSteps').value);
+
+        // 1. Run ONE simulation for the Timeline view
+        const singleRunEvents = simulatePoissonProcess(lambda, n);
+        drawTimeline(singleRunEvents, n);
+        document.getElementById('timelineStats').innerText = `Total events in this run: ${singleRunEvents.length} (Expected: ${lambda})`;
+
+        // 2. Run MONTE CARLO (many simulations) for statistics
+        const numSimulations = 2000;
+        const allCounts = []; // How many events per simulation
+        let allIntervals = []; // All times between events
+
+        for(let i=0; i<numSimulations; i++) {
+            const events = simulatePoissonProcess(lambda, n);
+            allCounts.push(events.length);
+            
+            // Calculate intervals (gaps between events)
+            if(events.length > 1) {
+                for(let j=1; j<events.length; j++) {
+                    // Time between event j and j-1
+                    let interval = (events[j] - events[j-1]) / n; 
+                    allIntervals.push(interval);
+                }
+            }
+        }
+
+        // 3. Draw the statistical charts
+        drawCountChart(allCounts, lambda);
+        drawIntervalChart(allIntervals, lambda);
+    }
+
+    // CORE FUNCTION: Simulates the process by dividing time into n steps
+    function simulatePoissonProcess(lambda, n) {
+        const events = []; // Stores time indices (0..n)
+        const p = lambda / n; // Bernoulli probability per step
+
+        for (let i = 0; i < n; i++) {
+            if (Math.random() < p) {
+                events.push(i);
+            }
+        }
+        return events;
+    }
+
+    // --- DRAWING FUNCTIONS ---
+
+    // Graph 1: Simple Canvas for Timeline
+    function drawTimeline(events, n) {
+        const canvas = document.getElementById('timelineCanvas');
+        const ctx = canvas.getContext('2d');
+        // Handle High DPI screens
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        
+        // Draw base line
+        const y = rect.height / 2;
+        ctx.beginPath();
+        ctx.strokeStyle = '#ccc';
+        ctx.moveTo(10, y);
+        ctx.lineTo(rect.width - 10, y);
+        ctx.stroke();
+
+        // Draw Events
+        ctx.strokeStyle = '#e74c3c';
+        ctx.lineWidth = 2;
+        events.forEach(timeIndex => {
+            const x = 10 + (timeIndex / n) * (rect.width - 20);
+            ctx.beginPath();
+            ctx.moveTo(x, y - 20);
+            ctx.lineTo(x, y + 20);
+            ctx.stroke();
+        });
+    }
+
+    // Graph 2: Count Histogram (Chart.js)
+    function drawCountChart(counts, lambda) {
+        const ctx = document.getElementById('countChart').getContext('2d');
+        
+        // Prepare data for histogram
+        const maxCount = Math.max(...counts) + 2;
+        const labels = Array.from({length: maxCount}, (_, i) => i);
+        const dataFreq = new Array(maxCount).fill(0);
+        counts.forEach(c => dataFreq[c]++);
+
+        // Calculate Theoretical Poisson Curve
+        const theoreticalData = labels.map(k => {
+            // P(k) = (e^-L * L^k) / k!
+            let fact = 1;
+            for(let f=2; f<=k; f++) fact *= f;
+            const prob = (Math.exp(-lambda) * Math.pow(lambda, k)) / fact;
+            return prob * counts.length; // Scale for comparison
+        });
+
+        if (countChartInstance) countChartInstance.destroy();
+
+        countChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Simulated (Frequency)',
+                        data: dataFreq,
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    },
+                    {
+                        label: 'Theoretical (Poisson)',
+                        data: theoreticalData,
+                        type: 'line',
+                        borderColor: '#e74c3c',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    // Graph 3: Interval Histogram (Chart.js)
+    function drawIntervalChart(intervals, lambda) {
+        const ctx = document.getElementById('intervalChart').getContext('2d');
+        
+        // Create bins for the histogram (e.g., 0.02s width)
+        const binSize = 0.02; 
+        const maxVal = Math.max(...intervals);
+        const numBins = Math.ceil(maxVal / binSize);
+        const bins = new Array(numBins).fill(0);
+        const labels = new Array(numBins).fill(0).map((_, i) => (i * binSize).toFixed(2));
+
+        intervals.forEach(val => {
+            const binIndex = Math.floor(val / binSize);
+            if(binIndex < numBins) bins[binIndex]++;
+        });
+
+        // Theoretical Exponential Curve: f(x) = lambda * e^(-lambda * x)
+        const totalIntervals = intervals.length;
+        const theoreticalCurve = labels.map(t => {
+            const x = parseFloat(t);
+            const pdf = lambda * Math.exp(-lambda * x);
+            return pdf * binSize * totalIntervals; // Scale for comparison
+        });
+
+        if (intervalChartInstance) intervalChartInstance.destroy();
+
+        intervalChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Measured Intervals',
+                    data: bins,
+                    backgroundColor: 'rgba(46, 204, 113, 0.6)',
+                    barPercentage: 1.0,
+                    categoryPercentage: 1.0
+                },
+                {
+                    label: 'Theoretical (Exponential)',
+                    data: theoreticalCurve,
+                    type: 'line',
+                    borderColor: '#2c3e50',
+                    borderWidth: 2,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                scales: {
+                    x: { ticks: { maxTicksLimit: 10 } },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Run on load
+    window.onload = runFullSimulation;
+</script>
+
+								
+
+                        </div>
+							</section>
+
+						
+						<!-- Three -->
+							
+
+						
+
+						
+
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<div class="container">
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
